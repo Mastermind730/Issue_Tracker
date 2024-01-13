@@ -1,49 +1,51 @@
-import React from 'react';
-import { Button, Table } from "@radix-ui/themes";
-import { PrismaClient } from '@prisma/client';
 import Link from 'next/link';
-import IssueStatusBadge from '../../components/IssueBadge';
+import delay from 'delay';
+import IssueActions from './IssueActions';
+import { Table } from '@radix-ui/themes';
+import IssueStatusBadge from '@/app/components/IssueBadge';
+import { PrismaClient } from '@prisma/client';
 
+// Create a new instance of PrismaClient
 const prisma = new PrismaClient();
 
-const Page = async () => {
-  let issues = await prisma.issue.findMany();
+const IssuesPage = async () => {
+  // Fetch issues from Prisma
+  const issues = await prisma.issue.findMany();
+  await delay(2000);
 
   return (
-    <>
-      <div className='mb-5'>
-        <Button className='bg-blue-500 text-white p-2'>
-          <Link href="/issues/new">New Issue</Link>
-        </Button>
-      </div>
-      <Table.Root className='w-full p-4 border'>
+    <div className="p-4">
+      <IssueActions />
+
+      <Table.Root className="mt-4 bg-white shadow-md rounded-lg overflow-hidden">
         <Table.Header>
-          <Table.Row className='bg-gray-200'>
-            <Table.ColumnHeaderCell className='p-2'>Issue</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className='hidden md:table-cell p-2'>Status</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className='hidden md:table-cell p-2'>Created</Table.ColumnHeaderCell>
+          <Table.Row>
+            <Table.ColumnHeaderCell className="p-2">Issue</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell className="p-2 hidden md:table-cell">Status</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell className="p-2 hidden md:table-cell">Created</Table.ColumnHeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {issues.map(issue => (
-            <Table.Row key={issue.id} className='border-t'>
-              <Table.Cell className='p-2'>
-                {issue.title}
-                <div className='block md:hidden'>
+          {issues.map((issue) => (
+            <Table.Row key={issue.id} className="hover:bg-gray-100">
+              <Table.Cell className="p-2">
+              <Link href={`/issues/${issue.id}`}>
+                  {issue.title}
+                </Link>
+                <div className="block md:hidden">
                   <IssueStatusBadge status={issue.status} />
                 </div>
               </Table.Cell>
-              <Table.Cell className='hidden md:table-cell p-2'>
+              <Table.Cell className="p-2 hidden md:table-cell">
                 <IssueStatusBadge status={issue.status} />
               </Table.Cell>
-              <Table.Cell className='hidden md:table-cell p-2'>{issue.status}</Table.Cell>
-              <Table.Cell className='hidden md:table-cell p-2'>{issue.createdAt.toDateString()}</Table.Cell>
+              <Table.Cell className="p-2 hidden md:table-cell">{issue.createdAt.toDateString()}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table.Root>
-    </>
+    </div>
   );
 };
 
-export default Page;
+export default IssuesPage;

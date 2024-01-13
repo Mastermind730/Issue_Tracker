@@ -34,7 +34,7 @@ const Issuepage = () => {
     try {
       setsubmitting(true);
       await axios.post("/api/issues", data);
-      router.replace("/issues");
+      router.replace("/issues/new");
       setValue("title", "");
       setValue("description", "");
       

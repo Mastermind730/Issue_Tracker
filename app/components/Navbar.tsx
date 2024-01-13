@@ -18,13 +18,13 @@ const Navbar = () => {
         },
         {
             title:"Issues",
-            link:"/issues"
+            link:"/issues/all"
         },
 
     ]
   return (
     
-    <nav className='flex space-x-6 border-b mb-5 px-5 h-14 items-center'>
+    <nav className='flex space-x-6 border-b mb-5 px-5 h-14 items-center justify-between'>
   <ul className='flex align-center '>
   <Link  href={"/"}>
         <li className='mx-2 p-2 text-1.5xl  '><FaBug />
@@ -42,6 +42,9 @@ const Navbar = () => {
       </Link>
     ))}
   </ul>
+  <span className="ml-2 p-2 text-lg text-black">
+  <Link href="/api/auth/signin">LOGIN</Link>
+</span>
 </nav>
 
   )
