@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/app/components/Link';
 import delay from 'delay';
 import IssueActions from './IssueActions';
 import { Table } from '@radix-ui/themes';
