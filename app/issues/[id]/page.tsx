@@ -1,3 +1,4 @@
+import IssueStatusBadge from '@/app/components/IssueBadge';
 import { PrismaClient } from '@prisma/client';
 import { notFound } from 'next/navigation';
 
@@ -28,7 +29,8 @@ const IssueDetailPage = async ({ params }: Props) => {
       <hr className="my-4 border-t" />
 
       <label className="block text-gray-600 font-semibold mb-2">Status:</label>
-      <span className="mb-4">{issue.status}</span>
+      {/* <span className="mb-4">{issue.status}</span> */}
+      <IssueStatusBadge status={issue.status}/>
 
       <br />
 
