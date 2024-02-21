@@ -37,8 +37,10 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   const onSubmit = async (data: IssueFormData) => {
     try {
       setsubmitting(true);
-      await axios.post("/api/issues", data);
-      router.replace("/issues/new");
+      // await axios.post("/api/issues", data);
+      if(issue) await axios.patch('/api/issues/'+issue.id,data);
+      else await axios.post('/api/issues',data);
+      router.push("/issues/all");
       setValue("title", "");
       setValue("description", "");
       
@@ -63,8 +65,11 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField.Root>
-          <TextField.Input defaultValue={issue?.title} placeholder="Title" {...register("title")} />
-        </TextField.Root>
+        <TextField.Input
+            defaultValue={issue?.title}
+            placeholder="Title"
+            {...register('title')}
+          />        </TextField.Root>
         {errors.title && (
           <Text color="red" as="p">
             {errors.title?.message}
@@ -88,8 +93,8 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
 
         {/* <button className="cursor-pointer text-white text-2xl bg-purple-600 rounded-2xl p-2" type="submit">Submit New Issue <Spinnner/></button> */}
         <Button  disabled={issubmitting}>
-          Submit New Issue {issubmitting && <Spinner />}
-        </Button>
+        {issue ? 'Update Issue' : 'Submit New Issue'}{' '}
+          {issubmitting && <Spinner />}        </Button>
       </form>
     </div>
   );

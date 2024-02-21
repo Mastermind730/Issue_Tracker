@@ -1,25 +1,57 @@
+"use client";
 import IssueStatusBadge from '@/app/components/IssueBadge';
 import { PrismaClient } from '@prisma/client';
 import { notFound } from 'next/navigation';
-import { Box,Grid,Button } from '@radix-ui/themes';
-import { Pencil2Icon } from '@radix-ui/react-icons'
-const prisma = new PrismaClient();
+import { Box, Grid, Button, Flex } from '@radix-ui/react';
+import { Pencil2Icon } from '@radix-ui/react-icons';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/router'; // Change "next/navigation" to "next/router"
 import Link from 'next/link';
+
+
+type Status = 'OPEN' | 'CLOSED' | 'PENDING';
+
+interface Issue {
+  id: string;
+  title: string;
+  description: string;
+  status: Status;
+  createdAt: string;
+}
+
 interface Props {
   params: { id: string };
 }
 
-const IssueDetailPage = async ({ params }: Props) => {
-  const issue = await prisma.issue.findUnique({
-    where: { id: parseInt(params.id) },
-  });
+const IssueDetailPage = ({ params }: Props) => {
+  const [issue, setIssue] = useState<Issue | null>(null); // Specify the type of state
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchIssue = async () => {
+      try {
+        const res = await axios.get(`/api/issues/${params.id}`);
+        console.log(res);
+        setIssue(res.data.issue);
+      } catch (error) {
+        console.error('Error fetching issue:', error);
+        // Handle error or redirect to a not-found page
+        router.push('/not-found');
+      }
+    };
+
+    fetchIssue();
+  }, [params.id, router]);
 
   if (!issue) {
-    throw notFound();
+    // Return loading state or handle it accordingly
+    return <div>Loading...</div>;
   }
 
   return (
-    <Grid columns={{ initial: "1", md: "2" }} gap="5">
+<Grid columns={[1, 2]} gap="5">
       <Box className="p-4">
         <label className="block text-gray-600 font-semibold mb-2">Title:</label>
         <span className="text-2xl font-bold mb-4 block">{issue.title}</span>
@@ -31,7 +63,7 @@ const IssueDetailPage = async ({ params }: Props) => {
         <hr className="my-4 border-t" />
 
         <label className="block text-gray-600 font-semibold mb-2">Status:</label>
-        <IssueStatusBadge status={issue.status} />
+        <IssueStatusBadge status={issue.status.toUpperCase() as Status} />
 
         <br />
 
@@ -39,12 +71,23 @@ const IssueDetailPage = async ({ params }: Props) => {
         <span className="mb-4">{new Date(issue.createdAt).toLocaleDateString()}</span>
       </Box>
 
-      <Box>
+      <Flex gap="2">
         <Button>
           <Pencil2Icon />
           <Link href={`/issues/${issue.id}/edit`}>Edit Issue</Link>
         </Button>
-      </Box>
+        <Button
+          variant="outline"
+          onClick={async () => {
+            await axios.delete(`/api/issues/${issue.id}`);
+            router.push('/issues/all');
+            // No need to call Router.refresh(), as Next.js handles the navigation
+          }}
+        >
+          <Pencil2Icon />
+          Delete Issue
+        </Button>
+      </Flex>
     </Grid>
   );
 };
