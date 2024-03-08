@@ -1,31 +1,40 @@
-import { createIssueSchema } from "@/app/ValidationSchema";
-import prisma from "@/prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+
+import { PrismaClient } from '@prisma/client';
+import { NextResponse,NextRequest } from 'next/server';
+import { createIssueSchema } from '@/app/ValidationSchema';
+const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
-    let issue_id = await req.url.slice(req.url.lastIndexOf("/") + 1);
+  try {
+    let issue_id = req.url.slice(req.url.lastIndexOf("/") + 1);
     issue_id = decodeURI(issue_id);
-    let numeric_id;
-    numeric_id=parseInt(issue_id,10);
+    const numeric_id = parseInt(issue_id, 10);
+
     const issues = await prisma.issue.findMany({
-        where: {
-            id: numeric_id,
-          },
-      
+      where: {
+        id: numeric_id,
+      },
     });
-    if (issues) {
+
+    if (issues.length > 0) {
+      return NextResponse.json(issues);
+    } else {
       return NextResponse.json({
-        status: "success",
-        msg: issues.length + " available Issues",
-        issues,
+        status: "Success",
+        msg: "No data found",
       });
-    }else{
-      return NextResponse.json({
-          status:"Success",
-          msg:"No data found",
-      })
     }
+  } catch (error) {
+    console.error('Error fetching issue:', error);
+    return NextResponse.json({
+      status: "Error",
+      msg: "Internal server error",
+    }, { status: 500 });
+  } finally {
+    await prisma.$disconnect(); // Disconnect Prisma client after the operation
   }
+}
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
