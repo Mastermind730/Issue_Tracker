@@ -29,3 +29,31 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+
+export async function GET(req: Request) {
+  try{
+      let open_count=await prisma.issue.count({
+        where:{
+          status:"OPEN"
+        }
+      })
+      let inprogress_count=await prisma.issue.count({
+        where:{
+          status:"IN_PROGRESS"
+        }
+      })
+      let closed_count=await prisma.issue.count({
+        where:{
+          status:"CLOSED"
+        }
+      })
+      return NextResponse.json({open_count:open_count,inprogress_count:inprogress_count,closed_count:closed_count})
+    }catch(error){
+      console.error("Error finding count!!",error)
+      return NextResponse.json({
+        error:"Internal Server Error"
+      },{status:500})
+    }
+
+}
