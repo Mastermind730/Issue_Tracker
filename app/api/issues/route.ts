@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from '@prisma/client'
 import { createIssueSchema } from "../../ValidationSchema";
+import axios from "axios";
 
 const prisma = new PrismaClient()
 
@@ -48,7 +49,14 @@ export async function GET(req: Request) {
           status:"CLOSED"
         }
       })
-      return NextResponse.json({open_count:open_count,inprogress_count:inprogress_count,closed_count:closed_count})
+      let latest_data = await prisma.issue.findMany({
+        take: 5,
+        orderBy: {
+          createdAt: "desc"
+        }
+      });
+      
+      return NextResponse.json({open_count:open_count,inprogress_count:inprogress_count,closed_count:closed_count,latest_data:latest_data})
     }catch(error){
       console.error("Error finding count!!",error)
       return NextResponse.json({
