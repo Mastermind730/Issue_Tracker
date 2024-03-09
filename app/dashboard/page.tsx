@@ -44,7 +44,7 @@ const Dashboardpage = () => {
     // { name: "Geek-o-mania", students: 1000 },
 ];
 console.log(graph_data)
-  return <div className="flex align-center justify-around">
+  return <div className="flex align-center justify-around flex-wrap">
     <div className="mx-10 ">
       {/* <Card> */}
     <div className="flex items-center justify-around w-[300px] bg-gray-200 p-4 rounded-md shadow-md mb-7">
@@ -74,7 +74,7 @@ console.log(graph_data)
       </Card>
       {/* </Card> */}
       </div>
-      <Card className="mx-15 w-[600px] p-4 ">
+      <Card className="mx-15 w-[600px] p-4 mt-10 ">
         <h1 className="text-left text-4xl font-semibold ">Latest Issues</h1>
         <div>
   {latest_issue.map((item, key) => (
