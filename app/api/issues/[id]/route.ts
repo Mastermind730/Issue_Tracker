@@ -17,7 +17,7 @@ export async function GET(req: Request) {
     });
 
     if (issues.length > 0) {
-      return NextResponse.json(issues);
+      return NextResponse.json(issues[0]);
     } else {
       return NextResponse.json({
         status: "Success",
