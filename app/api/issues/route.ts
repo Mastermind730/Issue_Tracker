@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from '@prisma/client'
 import { createIssueSchema } from "../../ValidationSchema";
 import axios from "axios";
-
-const prisma = new PrismaClient()
+import prisma from "@/lib/prismadb";
+// const prisma = new PrismaClient()
 
 
 

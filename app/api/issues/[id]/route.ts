@@ -1,8 +1,8 @@
 
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 import { NextResponse,NextRequest } from 'next/server';
 import { createIssueSchema } from '@/app/ValidationSchema';
-const prisma = new PrismaClient();
+import prisma from "@/lib/prismadb";
 
 export async function GET(req: Request) {
   try {
