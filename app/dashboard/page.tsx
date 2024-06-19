@@ -4,6 +4,7 @@ import { BarChart, Bar,   ResponsiveContainer,
    XAxis, YAxis } from "recharts";
    import axios from "axios";
 import { Card } from "@radix-ui/themes";
+import { Issue } from "@prisma/client";
 import IssueStatusBadge from "../components/IssueBadge";
 import Link from "next/link";
    
@@ -77,7 +78,7 @@ console.log(graph_data)
       <Card className="mx-15 w-[600px] p-4 mt-10 ">
         <h1 className="text-left text-4xl font-semibold ">Latest Issues</h1>
         <div>
-  {latest_issue.map((item, key) => (
+  {latest_issue.map((item:Issue, key) => (
     <div className="mt-3 " key={key}>
       <Link href={`/issues/${item.id}`} className="text-2xl font-semibold">{item.title}</Link>
       <p className="mb-1 mx-2">{item.description}</p>                 <IssueStatusBadge status={item.status} />

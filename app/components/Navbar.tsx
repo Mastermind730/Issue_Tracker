@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import React from 'react'
 import { FaBug } from "react-icons/fa";
 import classnames from 'classnames';
-import { ModeToggle } from './themeswitch';
+
 const Navbar = () => {
     const currentPath=usePathname()
     const navlinks=[
