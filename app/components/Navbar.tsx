@@ -42,10 +42,7 @@ const Navbar = () => {
       </Link>
     ))}
   </ul>
-  <span className="ml-2 p-2 text-lg text-black">
-  <Link href="/api/auth/signin">LOGIN</Link>
-  
-</span>
+
 </nav>
 
   )
